@@ -137,7 +137,7 @@ def main():
 
         # Map the latent state to config space
         q = subspace_f(z)
-        E_pot = system.action(system, system_def, q)
+        E_pot = system.action(system_def, q)
 
         return z, cond_params, q, E_pot
 
@@ -150,7 +150,7 @@ def main():
         stats = {}
 
         def q_dists_one(q):
-            return jax.vmap(partial(system.ke_error, system_def,
+            return jax.vmap(partial(system.kinetic_energy,
                                     q))(q_batch - q[None, :]) + DIST_EPS
 
         all_q_dists = jax.vmap(q_dists_one)(q_batch)  # [B,B]

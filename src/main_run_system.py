@@ -18,7 +18,7 @@ import polyscope.imgui as psim
 
 # Imports from this project
 import utils
-import config, layers, integrators, subspace
+import config, layers, integrators_rigid2d, subspace
 
 SRC_DIR = os.path.dirname(os.path.realpath(__file__))
 ROOT_DIR = os.path.join(SRC_DIR, "..")
@@ -104,7 +104,7 @@ def main():
     ## Integrator setup
     int_opts = {}
     int_state = {}
-    integrators.initialize_integrator(int_opts, int_state, args.integrator)
+    integrators_rigid2d.initialize_integrator(int_opts, int_state, args.integrator)
 
     ## State of the system
 
@@ -189,14 +189,14 @@ def main():
                         tmp_state_q = tmp_state_q.at[i].set(val)
 
                 if any_changed:
-                    integrators.update_state(int_opts, int_state, tmp_state_q, with_velocity=True)
-                    integrators.apply_domain_projection(int_state, subspace_domain_dict)
+                    integrators_rigid2d.update_state(int_opts, int_state, tmp_state_q, with_velocity=True)
+                    integrators_rigid2d.apply_domain_projection(int_state, subspace_domain_dict)
                     system.visualize(system_def, state_to_system(system_def, int_state['q_t']))
 
                 psim.TreePop()
 
         # Helpers to build other parts of the UI
-        integrators.build_ui(int_opts, int_state)
+        integrators_rigid2d.build_ui(int_opts, int_state)
         system.build_system_ui(system_def)
             
 
@@ -220,7 +220,7 @@ def main():
         psim.SameLine()
 
         if psim.Button("stop velocity"):
-            integrators.update_state(int_opts, int_state, int_state['q_t'], with_velocity=False)
+            integrators_rigid2d.update_state(int_opts, int_state, int_state['q_t'], with_velocity=False)
 
         psim.SameLine()
 
@@ -229,7 +229,7 @@ def main():
         if run_sim or psim.Button("single step"):
 
             # all-important timestep happens here
-            int_state = integrators.timestep(system,
+            int_state = integrators_rigid2d.timestep(system,
                                              system_def,
                                              int_state,
                                              int_opts,
@@ -237,7 +237,7 @@ def main():
                                              subspace_domain_dict=subspace_domain_dict)
 
     ps.set_user_callback(main_loop)
-    ps.show()
+    #ps.show()
 
 
 if __name__ == '__main__':
