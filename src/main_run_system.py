@@ -237,7 +237,7 @@ def main():
                                              subspace_domain_dict=subspace_domain_dict)
 
     ps.set_user_callback(main_loop)
-    #ps.show()
+    ps.show()
 
 
 if __name__ == '__main__':

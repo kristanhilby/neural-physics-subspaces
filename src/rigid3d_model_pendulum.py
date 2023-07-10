@@ -359,7 +359,7 @@ class Pendulum:
     def sample_conditional_params(self, system_def, rngkey, rho=1.):
         return jnp.zeros((0,))
 
-    def build_system_ui(self, system_def):
+    def build_system_ui(system_def):
         if psim.TreeNode("system UI"):
             psim.TextUnformatted("External forces:")
 

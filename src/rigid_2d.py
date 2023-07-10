@@ -38,9 +38,9 @@ def make_joint( b0, b1, bodies, joint_pos_world, joint_vec_world ):
     # TODO: Use rotation for joint initialization
     pb0 = joint_pos_world
     vb0 = joint_vec_world
-    if b0 != -1:
-        c0 = bodies[b0]['x0'][3,:]
-        pb0 = pb0 - c0
+    #if b0 != -1:
+    #    c0 = bodies[b0]['x0'][3,:]
+    #    pb0 = pb0 - c0
     pb1 = joint_pos_world
     vb1 = joint_vec_world
     if b1 != -1:
@@ -81,6 +81,7 @@ class rigid2d:
         system_def = {}
         system=rigid2d()
 
+
         # Example values:
         # (dummy data)
         system_def['system_name'] = "rigid2d"
@@ -109,6 +110,8 @@ class rigid2d:
             
             system_def['length'] = 50
 
+            config_dim = 334
+            system_def['dim'] = config_dim
             system_def['init_pos'] = jnp.zeros(config_dim) # some values
             system_def['interesting_states'] = jnp.zeros((0,config_dim))
             system_def['x0'] = jnp.array([0, 0])
@@ -119,6 +122,7 @@ class rigid2d:
             system_def['gravity'] = jnp.array([0.0, 0.0, -9.8])
         
         elif problem_name == 'problem_B':
+
             # and so on....
             config_dim = 334
             system_def['dim'] = config_dim
@@ -150,6 +154,7 @@ class rigid2d:
 
         system_def['interesting_states'] = system_def['init_pos'][None,:]
 
+
         return system, system_def
 
   
@@ -176,8 +181,8 @@ class rigid2d:
             b0id = j['body_id0']
             if b0id != -1:
                 # transform point on body to point in world
-                pb0 = jnp.matmul(jnp.append(pb0,1), qr_linpos[b0id])
-                vb0 = jnp.matmul(jnp.append(vb0,0), qr_linpos[b0id])
+                pb0 = jnp.matmul(pb0, qr_linpos)
+                vb0 = jnp.matmul(vb0, qr_linpos)
 
             pb1 = j['pos_body1']
             vb1 = j['vec_body1']
