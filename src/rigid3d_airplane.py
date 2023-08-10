@@ -626,8 +626,8 @@ class Aircraft:
         windz = system_def['external_forces']['wind_strength_z']
         wind = jnp.array([windx, windy, windz])
         aero_data = liftinglinemethod(system.airplane, q, wind)
-        aero_transforce = aero_data['F_b']
-        aero_rotmoment = aero_data['M_b']
+        aero_transforce = aero_data['F_b'] # 3 X 1
+        aero_rotmoment = aero_data['M_b'] # 3 X 1
         
         thrust_force_left = system_def['external_forces']['thrust_strength_left']*jnp.array([-1, 0, 0])
         thrust_force_right =  system_def['external_forces']['thrust_strength_right']*jnp.array([-1, 0, 0])
@@ -637,7 +637,7 @@ class Aircraft:
         dis_thrust_left = system.dissipation_fnc(n_thrust, thrust_force_left, q, "translation")
         dis_thrust_right = system.dissipation_fnc(n_thrust, thrust_force_right, q, "translation")
         dissipation = dis_aero_translation + dis_aero_rotation + dis_thrust_left + dis_thrust_right
-        return lagrangian + dissipation
+        return lagrangian + dissipation # 1 X 1
 
     def ke_translation(self, system_def, q):
         qR = q.reshape(-1,12,1)
@@ -646,14 +646,14 @@ class Aircraft:
         massR = system_def['mass'].reshape(-1,3,3)
         ke_translational = 0.5*jnp.transpose(velocity)*massR*velocity
 
-        return ke_translational
+        return ke_translational # 1 X 1
     
     def ke_rotational(self, system_def, q):
         qR = q.reshape(-1,12,1)
         omega = jnp.array([qR[-1,7,1], qR[-1,9,1], qR[-1,11,1]])
         inertiaR = system_def['inertia'].reshape(-1, 3, 3)
         ke_rot = 0.5*jnp.transpose(omega)*inertiaR*omega
-        return ke_rot
+        return ke_rot # 1 X 1
     
     def dissipation_fnc(self, n, c, q, style):
         qR = q.reshape(-1,12,1)
